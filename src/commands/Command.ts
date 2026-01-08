@@ -1,5 +1,5 @@
 import { ApplicationCommandDataResolvable, CommandInteraction } from "discord.js";
-import { ClientWrapper } from "../client/ClientWrapper";
+import { ClientWrapper } from "../client/ClientWrapper.js";
 
 export abstract class Command<T extends CommandInteraction> {
 

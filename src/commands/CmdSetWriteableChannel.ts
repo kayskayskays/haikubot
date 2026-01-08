@@ -1,4 +1,4 @@
-import { Command } from "./Command";
+import { Command } from "./Command.js";
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 export class CmdSetWriteableChannel extends Command<ChatInputCommandInteraction> {

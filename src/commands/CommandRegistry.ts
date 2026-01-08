@@ -1,6 +1,6 @@
 import { Command } from "./Command.js";
 import { CommandInteraction, REST, Routes } from "discord.js";
-import { ClientWrapper } from "../client/ClientWrapper";
+import { ClientWrapper } from "../client/ClientWrapper.js";
 
 export class CommandRegistry {
 

@@ -1,6 +1,6 @@
 import "dotenv/config";
-import { CommandRegistry } from "./CommandRegistry";
-import { CMDS } from "../util/all-commands";
+import { CommandRegistry } from "../commands/CommandRegistry.js";
+import { CMDS } from "./all-commands.js";
 
 const token = process.env.DISCORD_TOKEN!;
 const clientId = process.env.CLIENT_ID!;

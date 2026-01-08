@@ -1,9 +1,9 @@
 import "dotenv/config";
 import { CommandRegistry } from "./commands/CommandRegistry.js";
 import { Client, Events, GatewayIntentBits } from "discord.js";
-import { ClientWrapper } from "./client/ClientWrapper";
-import { registerHandlers } from "./client/handlers";
-import { CMDS } from "./util/all-commands";
+import { ClientWrapper } from "./client/ClientWrapper.js";
+import { registerHandlers } from "./client/handlers.js";
+import { CMDS } from "./util/all-commands.js";
 
 export const createClient = () => {
     const client = new Client({

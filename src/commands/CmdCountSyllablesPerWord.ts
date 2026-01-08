@@ -5,7 +5,7 @@ import {
     MessageFlags
 } from "discord.js";
 import { Command } from "./Command.js";
-import { cleanAndWrapWords, countWrappedWordsSyllables } from "../util/util";
+import { cleanAndWrapWords, countWrappedWordsSyllables } from "../util/util.js";
 
 export class CmdCountSyllablesPerWord extends Command<MessageContextMenuCommandInteraction> {
 

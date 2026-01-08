@@ -1,6 +1,6 @@
-import { CmdCountSyllables } from "../commands/CmdCountSyllables";
-import { CmdCountSyllablesPerWord } from "../commands/CmdCountSyllablesPerWord";
-import { CmdSetWriteableChannel } from "../commands/CmdSetWriteableChannel";
+import { CmdCountSyllables } from "../commands/CmdCountSyllables.js";
+import { CmdCountSyllablesPerWord } from "../commands/CmdCountSyllablesPerWord.js";
+import { CmdSetWriteableChannel } from "../commands/CmdSetWriteableChannel.js";
 
 export const CMDS = [
     new CmdCountSyllables(),

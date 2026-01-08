@@ -1,4 +1,3 @@
-import { ChannelType, PermissionFlagsBits } from "discord.js";
 import { syllable } from "syllable";
 
 export type Haiku = Readonly<{ firstLine: string[], secondLine: string[], thirdLine: string[] }>;
