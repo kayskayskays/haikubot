@@ -1,4 +1,4 @@
-import { Guild, PermissionFlagsBits, ChannelType } from "discord.js";
+import { ChannelType, PermissionFlagsBits } from "discord.js";
 import { syllable } from "syllable";
 
 export type Haiku = Readonly<{ firstLine: string[], secondLine: string[], thirdLine: string[] }>;
@@ -6,30 +6,6 @@ export type WordWithSyllables = Readonly<{
     word: string;
     syllables: number;
 }>;
-
-export const findWriteableChannel = (guild: Guild) => {
-    const botMember = guild.members.me;
-    if ( !botMember ) {
-        return null;
-    }
-
-    for ( const channel of guild.channels.cache.values() ) {
-        if ( channel.type !== ChannelType.GuildText ) {
-            continue;
-        }
-
-        const perms = channel.permissionsFor(botMember);
-        if ( !perms ) {
-            continue;
-        }
-
-        if ( perms.has(PermissionFlagsBits.SendMessages) && channel.name.includes("haiku") ) {
-            return channel;
-        }
-    }
-
-    return null;
-};
 
 export const countSyllables = (text: string) => {
     return countWrappedWordsSyllables(cleanAndWrapWords(text));

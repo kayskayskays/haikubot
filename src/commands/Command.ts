@@ -1,14 +1,9 @@
-import { CommandInteraction } from "discord.js";
-import { ClientWrapper } from "../ClientWrapper";
-import { CommandRegistry } from "./CommandRegistry";
+import { ApplicationCommandDataResolvable, CommandInteraction } from "discord.js";
+import { ClientWrapper } from "../client/ClientWrapper";
 
 export abstract class Command<T extends CommandInteraction> {
 
     private _cw: ClientWrapper | undefined;
-
-    public constructor() {
-        CommandRegistry.registerCommand(this);
-    }
 
     public setClientWrapper(cw: ClientWrapper): void {
         this._cw = cw;
@@ -20,7 +15,7 @@ export abstract class Command<T extends CommandInteraction> {
 
     abstract execute(interaction: T): Promise<void>;
 
-    abstract data(): any;
+    abstract data(): ApplicationCommandDataResolvable;
 
     abstract name(): string;
 

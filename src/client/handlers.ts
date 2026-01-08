@@ -1,5 +1,5 @@
 import { ChannelType, Events, Message } from "discord.js";
-import { formatHaiku, parseHaiku } from "./util.js";
+import { formatHaiku, parseHaiku } from "../util/util";
 import { ClientWrapper } from "./ClientWrapper";
 
 export const onLogin = (cw: ClientWrapper) => {

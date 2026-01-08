@@ -1,39 +1,30 @@
 import { Command } from "./Command.js";
 import { CommandInteraction, REST, Routes } from "discord.js";
-import { CmdCountSyllables } from "./CmdCountSyllables.js";
-import { CmdCountSyllablesPerWord } from "./CmdCountSyllablesPerWord.js";
-import { CmdSetWriteableChannel } from "./CmdSetWriteableChannel";
-import { ClientWrapper } from "../ClientWrapper";
+import { ClientWrapper } from "../client/ClientWrapper";
 
 export class CommandRegistry {
 
-    private static readonly REGISTRY: Map<string, Command<any>> = new Map();
+    private readonly _registry: Map<string, Command<any>> = new Map();
 
-    public static initialize() {
-        new CmdCountSyllables();
-        new CmdCountSyllablesPerWord();
-        new CmdSetWriteableChannel();
+    public constructor(cmds: Command<any>[]) {
+        cmds.forEach(cmd => this._registry.set(cmd.name(), cmd));
     }
 
-    public static setClientWrapper(cw: ClientWrapper) {
-        for ( const value of this.REGISTRY.values() ) {
+    public setClientWrapper(cw: ClientWrapper) {
+        for ( const value of this._registry.values() ) {
             value.setClientWrapper(cw);
         }
     }
 
-    public static registerCommand(cmd: Command<any>) {
-        this.REGISTRY.set(cmd.name(), cmd);
+    public async executeMatching<T extends CommandInteraction>(name: string, interaction: T): Promise<void> {
+        this._registry.get(name)?.execute(interaction);
     }
 
-    public static async executeMatching<T extends CommandInteraction>(name: string, interaction: T): Promise<void> {
-        this.REGISTRY.get(name)?.execute(interaction);
-    }
-
-    public static async deployAll(token: string, clientId: string, guildId: string): Promise<void> {
+    public async deployAll(token: string, clientId: string, guildId: string): Promise<void> {
         const rest = new REST({ version: "10" }).setToken(token);
 
         let cmds = [];
-        for ( const cmd of this.REGISTRY.values() ) {
+        for ( const cmd of this._registry.values() ) {
             cmds.push(cmd);
         }
 

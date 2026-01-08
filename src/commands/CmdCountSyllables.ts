@@ -5,7 +5,7 @@ import {
     MessageContextMenuCommandInteraction,
     MessageFlags
 } from "discord.js";
-import { countSyllables } from "../util.js";
+import { countSyllables } from "../util/util";
 
 export class CmdCountSyllables extends Command<MessageContextMenuCommandInteraction> {
 
