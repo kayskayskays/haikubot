@@ -16,12 +16,12 @@ export class CmdSetWriteableChannel extends Command<ChatInputCommandInteraction>
 
     data() {
         return new SlashCommandBuilder()
-            .setName("set-channel")
+            .setName(this.name())
             .setDescription("Sets the current channel for the bot to write to.");
     }
 
     name() : string {
-        return "Set the channel for the bot to write to.";
+        return "set-channel";
     }
 
 }
