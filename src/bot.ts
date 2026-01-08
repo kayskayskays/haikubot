@@ -1,6 +1,7 @@
 import { Client, Events, GatewayIntentBits } from "discord.js";
 import { registerHandlers } from "./handlers.js";
 import { CommandRegistry } from "./commands/CommandRegistry.js";
+import { ClientWrapper } from "./ClientWrapper";
 
 export const createClient = () => {
     const client = new Client({
@@ -11,7 +12,9 @@ export const createClient = () => {
         ],
     });
 
-    registerHandlers(client);
+    const cw = new ClientWrapper(client);
+
+    registerHandlers(cw);
 
     client.on(Events.InteractionCreate, async (interaction) => {
         if ( !interaction.isCommand() ) {
@@ -21,5 +24,5 @@ export const createClient = () => {
         await CommandRegistry.executeMatching(interaction.commandName, interaction);
     });
 
-    return client;
+    return cw;
 };
