@@ -1,5 +1,5 @@
 import { Command } from "./Command.js";
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, MessageFlags, SlashCommandBuilder } from "discord.js";
 
 export class CmdSetWriteableChannel extends Command<ChatInputCommandInteraction> {
 
@@ -8,7 +8,10 @@ export class CmdSetWriteableChannel extends Command<ChatInputCommandInteraction>
 
         this.clientWrapper()!.setWriteableChannelId(channelId);
 
-        return undefined;
+        await interaction.reply({
+            content: "Success!",
+            flags: MessageFlags.Ephemeral
+        });
     }
 
     data() {
