@@ -14,7 +14,7 @@ export const createClient = () => {
     registerHandlers(client);
 
     client.on(Events.InteractionCreate, async (interaction) => {
-        if ( !interaction.isMessageContextMenuCommand() ) {
+        if ( !interaction.isCommand() ) {
             return;
         }
 

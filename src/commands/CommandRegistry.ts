@@ -2,14 +2,23 @@ import { Command } from "./Command.js";
 import { CommandInteraction, REST, Routes } from "discord.js";
 import { CmdCountSyllables } from "./CmdCountSyllables.js";
 import { CmdCountSyllablesPerWord } from "./CmdCountSyllablesPerWord.js";
+import { CmdSetWriteableChannel } from "./CmdSetWriteableChannel";
+import { ClientWrapper } from "../ClientWrapper";
 
 export class CommandRegistry {
 
     private static readonly REGISTRY: Map<string, Command<any>> = new Map();
 
-    public static instantiate() {
-        new CmdCountSyllables().register();
-        new CmdCountSyllablesPerWord().register();
+    public static initialize() {
+        new CmdCountSyllables();
+        new CmdCountSyllablesPerWord();
+        new CmdSetWriteableChannel();
+    }
+
+    public static setClientWrapper(cw: ClientWrapper) {
+        for ( const value of this.REGISTRY.values() ) {
+            value.setClientWrapper(cw);
+        }
     }
 
     public static registerCommand(cmd: Command<any>) {
@@ -28,7 +37,10 @@ export class CommandRegistry {
             cmds.push(cmd);
         }
 
-        await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: cmds.map(cmd => cmd.data()), });
+        await rest.put(
+            Routes.applicationGuildCommands(clientId, guildId),
+            { body: cmds.map(cmd => cmd.data()) }
+        );
     }
 
 }

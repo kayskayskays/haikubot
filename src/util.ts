@@ -52,25 +52,42 @@ export const parseHaiku = (text: string) => {
        count: number;
     }>;
 
-    return wordsWithSyllables.reduce((h, w) => {
+    const result = wordsWithSyllables.reduce<HaikuWithRunningCount | null>((h, w) => {
+        if ( h === null ) {
+            return null;
+        }
+
         const currentCount = h.count;
         const currentHaiku = h.haiku;
 
-        let updatedHaiku;
-        const updatedCount = currentCount + w.syllables;
-
-        if ( currentCount < 5 ) {
-            updatedHaiku = { ...currentHaiku, firstLine: [ ...currentHaiku.firstLine, w.word ] };
-        } else if ( currentCount < 12 ) {
-            updatedHaiku = { ...currentHaiku, secondLine: [ ...currentHaiku.secondLine, w.word ] };
-        } else if ( currentCount < 17 ) {
-            updatedHaiku = { ...currentHaiku, thirdLine: [ ...currentHaiku.thirdLine, w.word ] };
-        } else {
-            throw new Error();
+        // If the syllable count for the word is unknown, just return null.
+        if ( w.syllables === 0 ) {
+            return null;
         }
 
+        const updatedCount = currentCount + w.syllables;
+
+        let key: keyof Haiku | null = null;
+        const validWordPredicate = (left: number, right: number) => left <= currentCount && updatedCount <= right;
+
+        if ( validWordPredicate(0, 5) ) {
+            key = "firstLine";
+        } else if ( validWordPredicate(6, 12) ) {
+            key = "secondLine";
+        } else if ( validWordPredicate(13, 17) ) {
+            key = "thirdLine";
+        }
+
+        if ( !key ) {
+            return null;
+        }
+
+        const updatedHaiku = { ...currentHaiku, [key]: [ ...currentHaiku[key], w.word] }
+
         return  { haiku: updatedHaiku , count: updatedCount };
-    }, { haiku: { firstLine: [], secondLine: [], thirdLine: [] }, count: 0 } as HaikuWithRunningCount).haiku;
+    }, { haiku: { firstLine: [], secondLine: [], thirdLine: [] }, count: 0 } as HaikuWithRunningCount);
+
+    return result?.haiku ?? null;
 };
 
 export const cleanAndWrapWords = (text: string) => {

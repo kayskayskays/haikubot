@@ -1,11 +1,15 @@
-import { Client, Events, Message } from "discord.js";
-import { findWriteableChannel, formatHaiku, parseHaiku } from "./util.js";
+import { ChannelType, Events, Message } from "discord.js";
+import { formatHaiku, parseHaiku } from "./util.js";
+import { ClientWrapper } from "./ClientWrapper";
 
-export const onLogin = (c: Client) => {
+export const onLogin = (cw: ClientWrapper) => {
+    const c = cw.client();
     c.once(Events.ClientReady, c => console.log(`Logged in as ${c.user.displayName}.`));
 };
 
-export const onMessage = (c: Client) => {
+export const onMessage = (cw: ClientWrapper) => {
+    const c = cw.client();
+
     c.on(Events.MessageCreate, async (msg: Message) => {
         if ( !msg.inGuild() ) {
             console.log("Not a guild...")
@@ -16,23 +20,17 @@ export const onMessage = (c: Client) => {
            return;
         }
 
+        const channelId = cw.writeableChannelId();
+        if ( !channelId ) {
+            return;
+        }
+
         const haiku = parseHaiku(msg.content);
         if ( !haiku ) {
-           console.log("Not a haiku...")
-           return;
+            return;
         }
 
-        const guild = msg.guild;
-        if ( !guild ) {
-           console.log("No guild...")
-           return;
-        }
-
-        const channel = findWriteableChannel(guild);
-        if ( !channel ) {
-           console.log("No writeable channel...")
-           return;
-        }
+        const channel = await c.channels.fetch(channelId);
 
         await msg.react("🇭");
         await msg.react("🇦");
@@ -42,19 +40,20 @@ export const onMessage = (c: Client) => {
 
         // We are asserting that the (first) writeable channel for the bot is one in which other users may intentionally
         // be writing haikus. So, ignore messages from this channel.
-        const msgChannelName = msg.channel.name;
-        if ( channel.name === msgChannelName ) {
-           console.log("Ignoring...")
+        const msgChannelId = msg.channel.id;
+        if ( msgChannelId === channelId ) {
            return;
         }
 
-        const embedding = formatHaiku(msg.author.tag, msgChannelName, haiku);
+        const embedding = formatHaiku(msg.author.tag, msg.channel.name, haiku);
 
-        channel.send({ embeds: [ embedding ] });
+        if ( channel?.type === ChannelType.GuildText ) {
+            channel.send({ embeds: [ embedding ] });
+        }
     });
 }
 
-export const registerHandlers = (c: Client) => {
-    onLogin(c);
-    onMessage(c);
+export const registerHandlers = (cw: ClientWrapper) => {
+    onLogin(cw);
+    onMessage(cw);
 }
