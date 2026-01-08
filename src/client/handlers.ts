@@ -21,6 +21,7 @@ export const onMessage = (cw: ClientWrapper) => {
         }
 
         const channelId = cw.writeableChannelId();
+        console.log(channelId);
         if ( !channelId ) {
             return;
         }

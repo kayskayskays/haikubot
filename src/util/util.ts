@@ -47,9 +47,9 @@ export const parseHaiku = (text: string) => {
 
         if ( validWordPredicate(0, 5) ) {
             key = "firstLine";
-        } else if ( validWordPredicate(6, 12) ) {
+        } else if ( validWordPredicate(5, 12) ) {
             key = "secondLine";
-        } else if ( validWordPredicate(13, 17) ) {
+        } else if ( validWordPredicate(12, 17) ) {
             key = "thirdLine";
         }
 
