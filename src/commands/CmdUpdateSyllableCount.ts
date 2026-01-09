@@ -42,10 +42,7 @@ export class CmdUpdateSyllableCount extends Command<ChatInputCommandInteraction>
         const kvs = this.clientWrapper()!.kvStore(guildId);
         kvs.set(word, count);
 
-        await interaction.reply({
-            content: `Updated **${word}** → ${count} syllable(s).`,
-            flags: MessageFlags.Ephemeral
-        });
+        await interaction.reply({ content: `Updated **${word}** → ${count} syllable(s).`, });
     }
 
     name() : string {
