@@ -12,7 +12,6 @@ export const onMessage = (cw: ClientWrapper) => {
 
     c.on(Events.MessageCreate, async (msg: Message) => {
         if ( !msg.inGuild() ) {
-            console.log("Not a guild...")
             return;
         }
 
@@ -26,7 +25,9 @@ export const onMessage = (cw: ClientWrapper) => {
             return;
         }
 
-        const haiku = parseHaiku(msg.content);
+        const guildId = msg.guildId;
+
+        const haiku = parseHaiku(cw.kvStore(guildId), msg.content);
         if ( !haiku ) {
             return;
         }
@@ -39,8 +40,6 @@ export const onMessage = (cw: ClientWrapper) => {
         await msg.react("🇰");
         await msg.react("🇺");
 
-        // We are asserting that the (first) writeable channel for the bot is one in which other users may intentionally
-        // be writing haikus. So, ignore messages from this channel.
         const msgChannelId = msg.channel.id;
         if ( msgChannelId === channelId ) {
            return;

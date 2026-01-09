@@ -23,7 +23,13 @@ export class CmdCountSyllablesPerWord extends Command<MessageContextMenuCommandI
         const msg = interaction.targetMessage;
         const content = msg.content;
 
-        const wordsWithSyllables = cleanAndWrapWords(content);
+        const kvs = this.keyValueStore(interaction);
+        if ( !kvs ) {
+            console.error("No kvs found.");
+            return;
+        }
+
+        const wordsWithSyllables = cleanAndWrapWords(kvs, content);
         const total = countWrappedWordsSyllables(wordsWithSyllables);
         const response = wordsWithSyllables.map(w => `${w.word}: ${w.syllables}`).concat(`Total: ${total}`).join('\n');
 

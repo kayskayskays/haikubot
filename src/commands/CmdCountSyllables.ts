@@ -19,8 +19,14 @@ export class CmdCountSyllables extends Command<MessageContextMenuCommandInteract
         const msg = interaction.targetMessage;
         const content = msg.content;
 
+        const guildId = interaction.guildId;
+        if ( !guildId ) {
+            console.error("No guild ID found.");
+            return;
+        }
+
         await interaction.reply({
-            content: `${countSyllables(content)} syllables.`,
+            content: `${countSyllables(this.clientWrapper()!.kvStore(guildId), content)} syllables.`,
             flags: MessageFlags.Ephemeral
         });
     }

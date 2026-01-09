@@ -1,4 +1,5 @@
 import { syllable } from "syllable";
+import { KeyValueStore } from "../db/KeyValueStore.js";
 
 export type Haiku = Readonly<{ firstLine: string[], secondLine: string[], thirdLine: string[] }>;
 export type WordWithSyllables = Readonly<{
@@ -6,16 +7,16 @@ export type WordWithSyllables = Readonly<{
     syllables: number;
 }>;
 
-export const countSyllables = (text: string) => {
-    return countWrappedWordsSyllables(cleanAndWrapWords(text));
+export const countSyllables = (kvs: KeyValueStore, text: string) => {
+    return countWrappedWordsSyllables(cleanAndWrapWords(kvs, text));
 };
 
 export const countWrappedWordsSyllables = (wordsWithSyllables: WordWithSyllables[]) => {
     return wordsWithSyllables.reduce((count, w) => count + w.syllables, 0);
 }
 
-export const parseHaiku = (text: string) => {
-    const wordsWithSyllables = cleanAndWrapWords(text)
+export const parseHaiku = (kvs: KeyValueStore, text: string) => {
+    const wordsWithSyllables = cleanAndWrapWords(kvs, text)
     const count = countWrappedWordsSyllables(wordsWithSyllables);
 
     if ( count !== 17 ) {
@@ -65,8 +66,8 @@ export const parseHaiku = (text: string) => {
     return result?.haiku ?? null;
 };
 
-export const cleanAndWrapWords = (text: string) => {
-    return wrapWordsWithSyllableCount(cleanText(text));
+export const cleanAndWrapWords = (kvs: KeyValueStore, text: string) => {
+    return wrapWordsWithSyllableCount(kvs, cleanText(text));
 }
 
 export const cleanText = (text: string) => {
@@ -81,9 +82,10 @@ export const cleanText = (text: string) => {
     return cleaned.split(/\s+/).map(w => w.trim()).filter(Boolean);
 };
 
-export const wrapWordsWithSyllableCount = (words: string[]) => {
+export const wrapWordsWithSyllableCount = (kvs: KeyValueStore, words: string[]) => {
     return words.map(word => {
-        return { word, syllables: syllable(word) } as WordWithSyllables;
+        const syllables = kvs.get(word) ?? syllable(word);
+        return { word, syllables } as WordWithSyllables;
     });
 };
 

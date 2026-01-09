@@ -4,6 +4,7 @@ import { Client, Events, GatewayIntentBits } from "discord.js";
 import { ClientWrapper } from "./client/ClientWrapper.js";
 import { registerHandlers } from "./client/handlers.js";
 import { CMDS } from "./util/all-commands.js";
+import { SqlLiteClient } from "./db/SqlLiteClient.js";
 
 export const createClient = () => {
     const client = new Client({
@@ -14,7 +15,7 @@ export const createClient = () => {
         ],
     });
 
-    const cw = new ClientWrapper(client);
+    const cw = new ClientWrapper(client, id => new SqlLiteClient(id));
     const registry = new CommandRegistry(CMDS);
     registry.setClientWrapper(cw);
 
