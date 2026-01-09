@@ -4,8 +4,6 @@ import { KeyValueStore } from "../db/KeyValueStore.js";
 export class ClientWrapper {
 
     private readonly _client: Client;
-
-    private _channelId: string | undefined = undefined;
     private readonly _kvStoreFactory: ClientWrapper.KvStoreFactory;
 
     public constructor(client: Client, kvStoreFactory: ClientWrapper.KvStoreFactory) {
@@ -19,14 +17,6 @@ export class ClientWrapper {
 
     public kvStore(guildId: string): KeyValueStore {
         return this._kvStoreFactory(guildId);
-    }
-
-    public writeableChannelId(): string | undefined {
-        return this._channelId;
-    }
-
-    public setWriteableChannelId(channelId: string) : void {
-        this._channelId = channelId;
     }
 
     public async login(token: string): Promise<any> {

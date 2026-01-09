@@ -3,10 +3,12 @@ import { ChatInputCommandInteraction, MessageFlags, SlashCommandBuilder } from "
 
 export class CmdSetWriteableChannel extends Command<ChatInputCommandInteraction> {
 
+    public static readonly KEY: string = "writeable-channel";
+
     async execute(interaction : ChatInputCommandInteraction) : Promise<void> {
         const channelId = interaction.channelId;
 
-        this.clientWrapper()!.setWriteableChannelId(channelId);
+        this.keyValueStore(interaction)?.set(CmdSetWriteableChannel.KEY, channelId);
 
         await interaction.reply({
             content: "Success!",

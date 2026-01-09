@@ -1,6 +1,7 @@
 import { ChannelType, Events, Message } from "discord.js";
 import { formatHaiku, parseHaiku } from "../util/util.js";
 import { ClientWrapper } from "./ClientWrapper.js";
+import { CmdSetWriteableChannel } from "../commands/CmdSetWriteableChannel.js";
 
 export const onLogin = (cw: ClientWrapper) => {
     const c = cw.client();
@@ -19,15 +20,15 @@ export const onMessage = (cw: ClientWrapper) => {
            return;
         }
 
-        const channelId = cw.writeableChannelId();
-        console.log(channelId);
+        const guildId = msg.guildId;
+        const kvs = cw.kvStore(guildId);
+
+        const channelId = kvs.get(CmdSetWriteableChannel.KEY);
         if ( !channelId ) {
             return;
         }
 
-        const guildId = msg.guildId;
-
-        const haiku = parseHaiku(cw.kvStore(guildId), msg.content);
+        const haiku = parseHaiku(kvs, msg.content);
         if ( !haiku ) {
             return;
         }

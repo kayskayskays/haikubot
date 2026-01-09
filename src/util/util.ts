@@ -15,6 +15,30 @@ export const countWrappedWordsSyllables = (wordsWithSyllables: WordWithSyllables
     return wordsWithSyllables.reduce((count, w) => count + w.syllables, 0);
 }
 
+export const cleanAndWrapWords = (kvs: KeyValueStore, text: string) => {
+    return wrapWordsWithSyllableCount(kvs, cleanText(text));
+}
+
+export const cleanText = (text: string) => {
+    const cleaned = text
+        .replace(/https?:\/\/\S+/g, " ")
+        .replace(/<@!?\d+>/g, " ")
+        .replace(/<#\d+>/g, " ")
+        .replace(/<a?:\w+:\d+>/g, " ")
+        .replace(/[^\p{L}\p{N}' -]+/gu, " ")
+        .replace("-_", "");
+
+    return cleaned.split(/\s+/).map(w => w.trim()).filter(Boolean);
+};
+
+export const wrapWordsWithSyllableCount = (kvs: KeyValueStore, words: string[]) => {
+    return words.map(word => {
+        const syllables = kvs.get(word) ?? syllable(word);
+        return { word, syllables } as WordWithSyllables;
+    });
+};
+
+
 export const parseHaiku = (kvs: KeyValueStore, text: string) => {
     const wordsWithSyllables = cleanAndWrapWords(kvs, text)
     const count = countWrappedWordsSyllables(wordsWithSyllables);
@@ -64,29 +88,6 @@ export const parseHaiku = (kvs: KeyValueStore, text: string) => {
     }, { haiku: { firstLine: [], secondLine: [], thirdLine: [] }, count: 0 } as HaikuWithRunningCount);
 
     return result?.haiku ?? null;
-};
-
-export const cleanAndWrapWords = (kvs: KeyValueStore, text: string) => {
-    return wrapWordsWithSyllableCount(kvs, cleanText(text));
-}
-
-export const cleanText = (text: string) => {
-    const cleaned = text
-        .replace(/https?:\/\/\S+/g, " ")
-        .replace(/<@!?\d+>/g, " ")
-        .replace(/<#\d+>/g, " ")
-        .replace(/<a?:\w+:\d+>/g, " ")
-        .replace(/[^\p{L}\p{N}' -]+/gu, " ")
-        .replace("-_", "");
-
-    return cleaned.split(/\s+/).map(w => w.trim()).filter(Boolean);
-};
-
-export const wrapWordsWithSyllableCount = (kvs: KeyValueStore, words: string[]) => {
-    return words.map(word => {
-        const syllables = kvs.get(word) ?? syllable(word);
-        return { word, syllables } as WordWithSyllables;
-    });
 };
 
 export const formatHaiku = (author: string, channel: string, haiku: Haiku) => {

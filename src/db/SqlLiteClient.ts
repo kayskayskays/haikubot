@@ -7,7 +7,7 @@ export class SqlLiteClient implements KeyValueStore {
 
     private readonly _db: DatabaseType;
 
-    private readonly _cache: Map<string, number> = new Map();
+    private readonly _cache: Map<string, string> = new Map();
 
     constructor(private readonly _guildId: string) {
         this._db = new Database(KeyValueStore.STORE_NAME);
@@ -22,7 +22,7 @@ export class SqlLiteClient implements KeyValueStore {
         `).run();
     }
 
-    get(key : string) : number | null {
+    get(key : string) : string | null {
         if ( this._cache.size === 0 ) {
             this.initializeCache();
         }
@@ -30,7 +30,7 @@ export class SqlLiteClient implements KeyValueStore {
         return this._cache.get(key) ?? null;
     }
 
-    set(key : string, value : number) : void {
+    set(key : string, value : string) : void {
         this._db.prepare(`
             INSERT INTO kv (outer_key, inner_key, value)
             VALUES (?, ?, ?)
@@ -53,7 +53,7 @@ export class SqlLiteClient implements KeyValueStore {
     private initializeCache(): void {
         const rows = this._db.prepare(`
             SELECT inner_key, value FROM kv WHERE outer_key = ?
-       `).all(this._guildId) as { inner_key: string, value: number }[];
+       `).all(this._guildId) as { inner_key: string, value: string }[];
 
         for ( const row of rows ) {
             this._cache.set(row.inner_key, row.value);

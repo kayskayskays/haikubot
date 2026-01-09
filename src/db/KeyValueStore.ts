@@ -1,9 +1,9 @@
 
 export interface KeyValueStore {
 
-    get(key: string): number | null;
+    get(key: string): string | null;
 
-    set(key: string, value: number): void;
+    set(key: string, value: string): void;
 
     unset(key: string): void;
 

@@ -2,9 +2,8 @@ import { Command } from "./Command.js";
 import {
     ApplicationCommandDataResolvable,
     ChatInputCommandInteraction,
-    MessageFlags,
-    SlashCommandBuilder,
-    PermissionFlagsBits
+    PermissionFlagsBits,
+    SlashCommandBuilder
 } from "discord.js";
 
 export class CmdUpdateSyllableCount extends Command<ChatInputCommandInteraction>{
@@ -40,7 +39,7 @@ export class CmdUpdateSyllableCount extends Command<ChatInputCommandInteraction>
         }
 
         const kvs = this.clientWrapper()!.kvStore(guildId);
-        kvs.set(word, count);
+        kvs.set(word, String(count));
 
         await interaction.reply({ content: `Updated **${word}** → ${count} syllable(s).`, });
     }
