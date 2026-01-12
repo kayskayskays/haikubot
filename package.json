@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node --experimental-specifier-resolution=node dist/index.js"
+    "watch": "tsc --watch",
+    "start": "node --experimental-specifier-resolution=node dist/index.js",
+    "deploy-commands": "pnpm build && node dist/util/deploy-commands.js"
   },
   "type": "module",
   "keywords": [],
