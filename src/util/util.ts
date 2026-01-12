@@ -48,8 +48,8 @@ export const parseHaiku = (kvs: KeyValueStore, text: string) => {
     }
 
     type HaikuWithRunningCount = Readonly<{
-       haiku: Haiku;
-       count: number;
+        haiku: Haiku;
+        count: number;
     }>;
 
     const result = wordsWithSyllables.reduce<HaikuWithRunningCount | null>((h, w) => {
