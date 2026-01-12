@@ -10,10 +10,7 @@ export class CmdSetWriteableChannel extends Command<ChatInputCommandInteraction>
 
         this.keyValueStore(interaction)?.set(CmdSetWriteableChannel.KEY, channelId);
 
-        await interaction.reply({
-            content: "Success!",
-            flags: MessageFlags.Ephemeral
-        });
+        await interaction.reply("Success!");
     }
 
     data() {
