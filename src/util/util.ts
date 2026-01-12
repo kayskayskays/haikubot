@@ -1,3 +1,4 @@
+import isChinese from "is-chinese";
 import { syllable } from "syllable";
 import { KeyValueStore } from "../db/KeyValueStore.js";
 
@@ -19,7 +20,7 @@ export const cleanAndWrapWords = (kvs: KeyValueStore, text: string) => {
     return wrapWordsWithSyllableCount(kvs, cleanText(text));
 }
 
-export const cleanText = (text: string) => {
+const cleanText = (text: string) => {
     const cleaned = text
         .replace(/https?:\/\/\S+/g, " ")
         .replace(/<@!?\d+>/g, " ")
@@ -31,9 +32,13 @@ export const cleanText = (text: string) => {
     return cleaned.split(/\s+/).map(w => w.trim()).filter(Boolean);
 };
 
+const countSyllablesInWord = (word: string): number => {
+    return syllable(word) + [...word].filter(x => isChinese(x)).length
+}
+
 export const wrapWordsWithSyllableCount = (kvs: KeyValueStore, words: string[]) => {
     return words.map(word => {
-        const syllables = kvs.get(word) ?? syllable(word);
+        const syllables = kvs.get(word) ?? countSyllablesInWord(word);
         return { word, syllables } as WordWithSyllables;
     });
 };

@@ -17,6 +17,7 @@
     "better-sqlite3": "^12.5.0",
     "discord.js": "^14.25.1",
     "dotenv": "^17.2.3",
+    "is-chinese": "^2.0.0",
     "syllable": "^5.0.1"
   },
   "devDependencies": {

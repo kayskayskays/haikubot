@@ -17,6 +17,9 @@ importers:
       dotenv:
         specifier: ^17.2.3
         version: 17.2.3
+      is-chinese:
+        specifier: ^2.0.0
+        version: 2.0.0
       syllable:
         specifier: ^5.0.1
         version: 5.0.1
@@ -330,6 +333,9 @@ packages:
 
   ini@1.3.8:
     resolution: {integrity: sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==}
+
+  is-chinese@2.0.0:
+    resolution: {integrity: sha512-1BTwHrs0wHnNZTyMWM8MPpVEs8u4uvLnUA2QZGt6cFjqY82DZV3lKH6hBGHqu8eJxkAIYcelm1kBR8v8URS4yA==}
 
   lodash.snakecase@4.1.1:
     resolution: {integrity: sha512-QZ1d4xoBHYUeuouhEq3lk3Uq7ldgyFXGBhg04+oRLnIz8o9T65Eh+8YdroUwn846zchkA9yDsDl5CVVaV2nqYw==}
@@ -726,6 +732,8 @@ snapshots:
   inherits@2.0.4: {}
 
   ini@1.3.8: {}
+
+  is-chinese@2.0.0: {}
 
   lodash.snakecase@4.1.1: {}
 
