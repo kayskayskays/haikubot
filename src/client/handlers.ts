@@ -35,16 +35,16 @@ export const onMessage = (cw: ClientWrapper) => {
 
         const channel = await c.channels.fetch(channelId);
 
+        const msgChannelId = msg.channel.id;
+        if ( msgChannelId === channelId ) {
+            return;
+        }
+
         await msg.react("🇭");
         await msg.react("🇦");
         await msg.react("🇮");
         await msg.react("🇰");
         await msg.react("🇺");
-
-        const msgChannelId = msg.channel.id;
-        if ( msgChannelId === channelId ) {
-            return;
-        }
 
         const embedding = formatHaiku(msg.author.tag, msg.channel.name, haiku);
 
