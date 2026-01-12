@@ -6,6 +6,8 @@ export class ClientWrapper {
     private readonly _client: Client;
     private readonly _kvStoreFactory: ClientWrapper.KvStoreFactory;
 
+    private readonly _idToKvs = new Map<string, KeyValueStore>();
+
     public constructor(client: Client, kvStoreFactory: ClientWrapper.KvStoreFactory) {
         this._client = client;
         this._kvStoreFactory = kvStoreFactory;
@@ -16,7 +18,11 @@ export class ClientWrapper {
     }
 
     public kvStore(guildId: string): KeyValueStore {
-        return this._kvStoreFactory(guildId);
+        if ( !this._idToKvs.has(guildId) ) {
+            this._idToKvs.set(guildId, this._kvStoreFactory(guildId));
+        }
+
+        return this._idToKvs.get(guildId)!;
     }
 
     public async login(token: string): Promise<any> {

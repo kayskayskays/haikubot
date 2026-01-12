@@ -16,7 +16,7 @@ export class CommandRegistry {
         }
     }
 
-    public async executeMatching<T extends CommandInteraction>(name: string, interaction: T): Promise<void> {
+    public async executeMatching(name: string, interaction: CommandInteraction): Promise<void> {
         this._registry.get(name)?.execute(interaction);
     }
 
