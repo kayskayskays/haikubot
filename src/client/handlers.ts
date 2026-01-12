@@ -17,7 +17,7 @@ export const onMessage = (cw: ClientWrapper) => {
         }
 
         if ( msg.author.bot ) {
-           return;
+            return;
         }
 
         const guildId = msg.guildId;
@@ -43,7 +43,7 @@ export const onMessage = (cw: ClientWrapper) => {
 
         const msgChannelId = msg.channel.id;
         if ( msgChannelId === channelId ) {
-           return;
+            return;
         }
 
         const embedding = formatHaiku(msg.author.tag, msg.channel.name, haiku);
