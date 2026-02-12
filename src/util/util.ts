@@ -36,10 +36,10 @@ const countSyllablesInWord = (word: string): number => {
     return syllable(word) + [...word].filter(x => isChinese(x)).length
 }
 
-export const wrapWordsWithSyllableCount = (kvs: KeyValueStore, words: string[]) => {
+const wrapWordsWithSyllableCount = (kvs: KeyValueStore, words: string[]): WordWithSyllables[] => {
     return words.map(word => {
-        const syllables = kvs.get(word) ?? countSyllablesInWord(word);
-        return { word, syllables } as WordWithSyllables;
+        const syllables = Number(kvs.get(word)) ?? countSyllablesInWord(word);
+        return { word, syllables };
     });
 };
 
