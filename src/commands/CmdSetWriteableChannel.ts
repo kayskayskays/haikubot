@@ -1,5 +1,5 @@
 import { Command } from "./Command.js";
-import { ChatInputCommandInteraction, MessageFlags, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 export class CmdSetWriteableChannel extends Command<ChatInputCommandInteraction> {
 
@@ -8,7 +8,8 @@ export class CmdSetWriteableChannel extends Command<ChatInputCommandInteraction>
     async execute(interaction : ChatInputCommandInteraction) : Promise<void> {
         const channelId = interaction.channelId;
 
-        this.keyValueStore(interaction)?.set(CmdSetWriteableChannel.KEY, channelId);
+        const kvs = this.keyValueStore(interaction);
+        kvs?.set(CmdSetWriteableChannel.KEY, channelId);
 
         await interaction.reply("Success!");
     }

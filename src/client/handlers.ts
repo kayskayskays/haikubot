@@ -33,7 +33,7 @@ export const onMessage = (cw: ClientWrapper) => {
             return;
         }
 
-        const channel = await c.channels.fetch(channelId);
+        const channel = await c.channels.fetch(channelId).catch(e => console.error(e));
 
         const msgChannelId = msg.channel.id;
         if ( msgChannelId === channelId ) {

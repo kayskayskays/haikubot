@@ -16,20 +16,19 @@ export class SqlLiteClient implements KeyValueStore {
             CREATE TABLE IF NOT EXISTS kv (
                 outer_key TEXT NOT NULL,
                 inner_key TEXT NOT NULL,
-                value INTEGER NOT NULL,
+                value TEXT NOT NULL,
                 PRIMARY KEY (outer_key, inner_key)
             )
         `).run();
     }
 
     get(key : string) : string | null {
-        if ( this._cache.size === 0 ) {
+        if ( this._cache.size === 0) {
             this.initializeCache();
         }
 
         return this._cache.get(key) ?? null;
     }
-
     set(key : string, value : string) : void {
         this._db.prepare(`
             INSERT INTO kv (outer_key, inner_key, value)

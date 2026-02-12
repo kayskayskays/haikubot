@@ -38,7 +38,8 @@ const countSyllablesInWord = (word: string): number => {
 
 const wrapWordsWithSyllableCount = (kvs: KeyValueStore, words: string[]): WordWithSyllables[] => {
     return words.map(word => {
-        const syllables = Number(kvs.get(word)) ?? countSyllablesInWord(word);
+        const kvsCount = kvs.get(word);
+        const syllables = kvsCount ? Number(kvsCount) : countSyllablesInWord(word);
         return { word, syllables };
     });
 };
