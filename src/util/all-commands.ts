@@ -3,7 +3,7 @@ import { CmdCountSyllablesPerWord } from "../commands/CmdCountSyllablesPerWord.j
 import { CmdSetWriteableChannel } from "../commands/CmdSetWriteableChannel.js";
 import { CmdUpdateSyllableCount } from "../commands/CmdUpdateSyllableCount.js";
 
-export const CMDS = [
+export const COMMANDS = [
     new CmdCountSyllables(),
     new CmdCountSyllablesPerWord(),
     new CmdSetWriteableChannel(),

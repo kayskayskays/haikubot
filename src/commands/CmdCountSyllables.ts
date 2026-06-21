@@ -8,7 +8,6 @@ import {
 import { countSyllables } from "../util/util.js";
 
 export class CmdCountSyllables extends Command<MessageContextMenuCommandInteraction> {
-
     data() {
         return new ContextMenuCommandBuilder()
             .setName(this.name())
@@ -34,5 +33,4 @@ export class CmdCountSyllables extends Command<MessageContextMenuCommandInteract
     name(): string {
         return "Count Syllables";
     }
-
 }

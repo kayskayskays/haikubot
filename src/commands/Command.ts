@@ -3,10 +3,9 @@ import { ClientWrapper } from "../client/ClientWrapper.js";
 import { KeyValueStore } from "../db/KeyValueStore.js";
 
 export abstract class Command<T extends CommandInteraction> {
-
     private _cw: ClientWrapper | undefined;
 
-    public setClientWrapper(cw: ClientWrapper): void {
+    setClientWrapper(cw: ClientWrapper): void {
         this._cw = cw;
     }
 
@@ -30,5 +29,4 @@ export abstract class Command<T extends CommandInteraction> {
     abstract data(): ApplicationCommandDataResolvable;
 
     abstract name(): string;
-
 }

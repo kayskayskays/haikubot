@@ -3,10 +3,10 @@ import { CommandRegistry } from "./commands/CommandRegistry.js";
 import { Client, Events, GatewayIntentBits } from "discord.js";
 import { ClientWrapper } from "./client/ClientWrapper.js";
 import { registerHandlers } from "./client/handlers.js";
-import { CMDS } from "./util/all-commands.js";
+import { COMMANDS } from "./util/all-commands.js";
 import { SqlLiteClient } from "./db/SqlLiteClient.js";
 
-export const createClient = () => {
+const createClient = () => {
     const client = new Client({
         intents: [
             GatewayIntentBits.Guilds,
@@ -16,7 +16,7 @@ export const createClient = () => {
     });
 
     const cw = new ClientWrapper(client, id => new SqlLiteClient(id));
-    const registry = new CommandRegistry(CMDS);
+    const registry = new CommandRegistry(COMMANDS);
     registry.setClientWrapper(cw);
 
     registerHandlers(cw);
@@ -39,8 +39,6 @@ const run = async () => {
     }
 
     const cw = createClient();
-
-
     await cw.login(token);
 };
 

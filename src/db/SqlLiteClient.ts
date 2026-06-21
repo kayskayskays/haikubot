@@ -4,7 +4,6 @@ import Database from "better-sqlite3";
 import type { Database as DatabaseType } from "better-sqlite3";
 
 export class SqlLiteClient implements KeyValueStore {
-
     private readonly _db: DatabaseType;
 
     private readonly _cache: Map<string, string> = new Map();
@@ -58,5 +57,4 @@ export class SqlLiteClient implements KeyValueStore {
             this._cache.set(row.inner_key, row.value);
         }
     }
-
 }

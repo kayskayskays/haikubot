@@ -3,24 +3,23 @@ import { CommandInteraction, REST, Routes } from "discord.js";
 import { ClientWrapper } from "../client/ClientWrapper.js";
 
 export class CommandRegistry {
-
     private readonly _registry: Map<string, Command<any>> = new Map();
 
-    public constructor(cmds: Command<any>[]) {
+    constructor(cmds: Command<any>[]) {
         cmds.forEach(cmd => this._registry.set(cmd.name(), cmd));
     }
 
-    public setClientWrapper(cw: ClientWrapper) {
+    setClientWrapper(cw: ClientWrapper) {
         for ( const value of this._registry.values() ) {
             value.setClientWrapper(cw);
         }
     }
 
-    public async executeMatching(name: string, interaction: CommandInteraction): Promise<void> {
+    async executeMatching(name: string, interaction: CommandInteraction): Promise<void> {
         this._registry.get(name)?.execute(interaction);
     }
 
-    public async deployAll(token: string, clientId: string, guildId: string): Promise<void> {
+    async deployAll(token: string, clientId: string, guildId: string): Promise<void> {
         const rest = new REST({ version: "10" }).setToken(token);
 
         let cmds = [];
@@ -33,5 +32,4 @@ export class CommandRegistry {
             { body: cmds.map(cmd => cmd.data()) }
         );
     }
-
 }

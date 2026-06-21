@@ -8,7 +8,6 @@ import { Command } from "./Command.js";
 import { cleanAndWrapWords, countWrappedWordsSyllables } from "../util/util.js";
 
 export class CmdCountSyllablesPerWord extends Command<MessageContextMenuCommandInteraction> {
-
     name() : string {
         return "Count Syllables (per word)";
     }
@@ -38,5 +37,4 @@ export class CmdCountSyllablesPerWord extends Command<MessageContextMenuCommandI
             flags: MessageFlags.Ephemeral
         });
     }
-
 }

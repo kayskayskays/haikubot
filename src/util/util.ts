@@ -2,8 +2,8 @@ import isChinese from "is-chinese";
 import { syllable } from "syllable";
 import { KeyValueStore } from "../db/KeyValueStore.js";
 
-export type Haiku = Readonly<{ firstLine: string[], secondLine: string[], thirdLine: string[] }>;
-export type WordWithSyllables = Readonly<{
+type Haiku = Readonly<{ firstLine: string[], secondLine: string[], thirdLine: string[] }>;
+type WordWithSyllables = Readonly<{
     word: string;
     syllables: number;
 }>;
@@ -43,7 +43,6 @@ const wrapWordsWithSyllableCount = (kvs: KeyValueStore, words: string[]): WordWi
         return { word, syllables };
     });
 };
-
 
 export const parseHaiku = (kvs: KeyValueStore, text: string) => {
     const wordsWithSyllables = cleanAndWrapWords(kvs, text)

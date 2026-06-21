@@ -3,12 +3,12 @@ import { formatHaiku, parseHaiku } from "../util/util.js";
 import { ClientWrapper } from "./ClientWrapper.js";
 import { CmdSetWriteableChannel } from "../commands/CmdSetWriteableChannel.js";
 
-export const onLogin = (cw: ClientWrapper) => {
+const onLogin = (cw: ClientWrapper) => {
     const c = cw.client();
     c.once(Events.ClientReady, c => console.log(`Logged in as ${c.user.displayName}.`));
 };
 
-export const onMessage = (cw: ClientWrapper) => {
+const onMessage = (cw: ClientWrapper) => {
     const c = cw.client();
 
     c.on(Events.MessageCreate, async (msg: Message) => {

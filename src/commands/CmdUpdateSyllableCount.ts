@@ -7,7 +7,6 @@ import {
 } from "discord.js";
 
 export class CmdUpdateSyllableCount extends Command<ChatInputCommandInteraction>{
-
     data() : ApplicationCommandDataResolvable {
         return new SlashCommandBuilder()
             .setName(this.name())
@@ -47,5 +46,4 @@ export class CmdUpdateSyllableCount extends Command<ChatInputCommandInteraction>
     name() : string {
         return "update-syllable-count";
     }
-
 }

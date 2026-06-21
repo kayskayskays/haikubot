@@ -2,8 +2,7 @@ import { Command } from "./Command.js";
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 export class CmdSetWriteableChannel extends Command<ChatInputCommandInteraction> {
-
-    public static readonly KEY: string = "writeable-channel";
+    static readonly KEY: string = "writeable-channel";
 
     async execute(interaction : ChatInputCommandInteraction) : Promise<void> {
         const channelId = interaction.channelId;
@@ -23,5 +22,4 @@ export class CmdSetWriteableChannel extends Command<ChatInputCommandInteraction>
     name() : string {
         return "set-channel";
     }
-
 }
