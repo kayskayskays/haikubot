@@ -1,0 +1,71 @@
+{
+  description = "haikubot";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+  };
+
+  outputs =
+    { nixpkgs, flake-utils, ... }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+        };
+      in
+      {
+        formatter = pkgs.nixfmt;
+
+        packages.default =
+          let
+            pnpmDeps = pkgs.fetchPnpmDeps {
+              pname = "haikubot-pnpm-deps";
+              version = "1.0.0";
+              src = ./.;
+
+              pnpm = pkgs.pnpm_10;
+              fetcherVersion = 3;
+              hash = "sha256-iUZMoi0z5AQjq6WGEEADQakHXD2KW3CUArgO1jtJftA=";
+            };
+          in
+          pkgs.stdenv.mkDerivation {
+            pname = "haikubot";
+            version = "1.0.0";
+            src = ./.;
+
+            inherit pnpmDeps;
+
+            nativeBuildInputs = with pkgs; [
+              nodejs_22
+              pnpm_10
+              pnpmConfigHook
+              makeWrapper
+              python3
+            ];
+
+            buildPhase = ''
+              pnpm build
+            '';
+
+            installPhase = ''
+              mkdir -p "$out/lib/haikubot" "$out/bin"
+
+              cp -r dist node_modules package.json "$out/lib/haikubot/"
+
+              makeWrapper ${pkgs.nodejs_22}/bin/node "$out/bin/haikubot" \
+                --add-flags "$out/lib/haikubot/dist/index.js"
+            '';
+          };
+
+        devShells.default = pkgs.mkShell {
+          packages = with pkgs; [
+            nodejs_22
+            pnpm_10
+            python3
+          ];
+        };
+      }
+    );
+}
