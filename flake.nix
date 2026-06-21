@@ -56,7 +56,12 @@
 
               makeWrapper ${pkgs.nodejs_22}/bin/node "$out/bin/haikubot" \
                 --add-flags "$out/lib/haikubot/dist/index.js"
+
+              makeWrapper ${pkgs.nodejs_22}/bin/node "$out/bin/haikubot-deploy" \
+                --add-flags "$out/lib/haikubot/dist/util/deploy-commands.js"
             '';
+
+            meta.mainProgram = "haikubot";
           };
 
         devShells.default = pkgs.mkShell {
