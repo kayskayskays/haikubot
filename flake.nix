@@ -37,15 +37,23 @@
 
             inherit pnpmDeps;
 
-            nativeBuildInputs = with pkgs; [
-              nodejs_22
-              pnpm_10
-              pnpmConfigHook
-              makeWrapper
-              python3
-            ];
+            nativeBuildInputs =
+              (with pkgs; [
+                nodejs_24
+                pnpm_10
+                pnpmConfigHook
+                makeWrapper
+                python3
+              ])
+              ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+                pkgs.darwin.cctools
+              ];
+
+            npm_config_build_from_source = "true";
+            npm_config_nodedir = "${pkgs.nodejs_24}";
 
             buildPhase = ''
+              pnpm rebuild better-sqlite3
               pnpm build
             '';
 
@@ -54,10 +62,10 @@
 
               cp -r dist node_modules package.json "$out/lib/haikubot/"
 
-              makeWrapper ${pkgs.nodejs_22}/bin/node "$out/bin/haikubot" \
+              makeWrapper ${pkgs.nodejs_24}/bin/node "$out/bin/haikubot" \
                 --add-flags "$out/lib/haikubot/dist/index.js"
 
-              makeWrapper ${pkgs.nodejs_22}/bin/node "$out/bin/haikubot-deploy" \
+              makeWrapper ${pkgs.nodejs_24}/bin/node "$out/bin/haikubot-deploy" \
                 --add-flags "$out/lib/haikubot/dist/util/deploy-commands.js"
             '';
 
@@ -66,7 +74,7 @@
 
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
-            nodejs_22
+            nodejs_24
             pnpm_10
             python3
           ];
