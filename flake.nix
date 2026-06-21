@@ -21,7 +21,7 @@
         packages.default =
           let
             pnpmDeps = pkgs.fetchPnpmDeps {
-              pname = "haikubot-pnpm-deps";
+              pname = "haikubot";
               version = "1.0.0";
               src = ./.;
 
