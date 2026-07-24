@@ -28,6 +28,7 @@ export const cleanAndWrapWords = (kvs: KeyValueStore, text: string) => {
 
 const cleanText = (text: string) => {
   const cleaned = text
+    .replace(/[’‘]/g, "'")
     .replace(/https?:\/\/\S+/g, ' ')
     .replace(/<@!?\d+>/g, ' ')
     .replace(/<#\d+>/g, ' ')
