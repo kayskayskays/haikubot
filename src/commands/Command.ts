@@ -1,32 +1,35 @@
-import { ApplicationCommandDataResolvable, CommandInteraction } from "discord.js";
-import { ClientWrapper } from "../client/ClientWrapper.js";
-import { KeyValueStore } from "../db/KeyValueStore.js";
+import {
+  ApplicationCommandDataResolvable,
+  CommandInteraction,
+} from 'discord.js';
+import { ClientWrapper } from '../client/ClientWrapper.js';
+import { KeyValueStore } from '../db/KeyValueStore.js';
 
 export abstract class Command<T extends CommandInteraction> {
-    private _cw: ClientWrapper | undefined;
+  private _cw: ClientWrapper | undefined;
 
-    setClientWrapper(cw: ClientWrapper): void {
-        this._cw = cw;
+  setClientWrapper(cw: ClientWrapper): void {
+    this._cw = cw;
+  }
+
+  protected clientWrapper(): ClientWrapper | undefined {
+    return this._cw;
+  }
+
+  protected keyValueStore(interaction: T): KeyValueStore | undefined {
+    const guildId = interaction.guildId;
+
+    if (!guildId) {
+      console.error('No guildId found.');
+      return undefined;
     }
 
-    protected clientWrapper(): ClientWrapper | undefined {
-        return this._cw;
-    }
+    return this.clientWrapper()?.kvStore(guildId);
+  }
 
-    protected keyValueStore(interaction: T): KeyValueStore | undefined {
-        const guildId = interaction.guildId;
+  abstract execute(interaction: T): Promise<void>;
 
-        if ( !guildId ) {
-            console.error("No guildId found.");
-            return undefined;
-        }
+  abstract data(): ApplicationCommandDataResolvable;
 
-        return this.clientWrapper()?.kvStore(guildId);
-    }
-
-    abstract execute(interaction: T): Promise<void>;
-
-    abstract data(): ApplicationCommandDataResolvable;
-
-    abstract name(): string;
+  abstract name(): string;
 }

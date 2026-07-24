@@ -1,104 +1,126 @@
-import isChinese from "is-chinese";
-import { syllable } from "syllable";
-import { KeyValueStore } from "../db/KeyValueStore.js";
+import isChinese from 'is-chinese';
+import { syllable } from 'syllable';
+import { KeyValueStore } from '../db/KeyValueStore.js';
 
-type Haiku = Readonly<{ firstLine: string[], secondLine: string[], thirdLine: string[] }>;
+type Haiku = Readonly<{
+  firstLine: string[];
+  secondLine: string[];
+  thirdLine: string[];
+}>;
 type WordWithSyllables = Readonly<{
-    word: string;
-    syllables: number;
+  word: string;
+  syllables: number;
 }>;
 
 export const countSyllables = (kvs: KeyValueStore, text: string) => {
-    return countWrappedWordsSyllables(cleanAndWrapWords(kvs, text));
+  return countWrappedWordsSyllables(cleanAndWrapWords(kvs, text));
 };
 
-export const countWrappedWordsSyllables = (wordsWithSyllables: WordWithSyllables[]) => {
-    return wordsWithSyllables.reduce((count, w) => count + w.syllables, 0);
-}
+export const countWrappedWordsSyllables = (
+  wordsWithSyllables: WordWithSyllables[],
+) => {
+  return wordsWithSyllables.reduce((count, w) => count + w.syllables, 0);
+};
 
 export const cleanAndWrapWords = (kvs: KeyValueStore, text: string) => {
-    return wrapWordsWithSyllableCount(kvs, cleanText(text));
-}
+  return wrapWordsWithSyllableCount(kvs, cleanText(text));
+};
 
 const cleanText = (text: string) => {
-    const cleaned = text
-        .replace(/https?:\/\/\S+/g, " ")
-        .replace(/<@!?\d+>/g, " ")
-        .replace(/<#\d+>/g, " ")
-        .replace(/<a?:\w+:\d+>/g, " ")
-        .replace(/[^\p{L}\p{N}' -]+/gu, " ")
-        .replace("-_", "");
+  const cleaned = text
+    .replace(/https?:\/\/\S+/g, ' ')
+    .replace(/<@!?\d+>/g, ' ')
+    .replace(/<#\d+>/g, ' ')
+    .replace(/<a?:\w+:\d+>/g, ' ')
+    .replace(/[^\p{L}\p{N}' -]+/gu, ' ')
+    .replace('-_', '');
 
-    return cleaned.split(/\s+/).map(w => w.trim()).filter(Boolean);
+  return cleaned
+    .split(/\s+/)
+    .map((w) => w.trim())
+    .filter(Boolean);
 };
 
 const countSyllablesInWord = (word: string): number => {
-    return syllable(word) + [...word].filter(x => isChinese(x)).length
-}
+  return syllable(word) + [...word].filter((x) => isChinese(x)).length;
+};
 
-const wrapWordsWithSyllableCount = (kvs: KeyValueStore, words: string[]): WordWithSyllables[] => {
-    return words.map(word => {
-        const kvsCount = kvs.get(word);
-        const syllables = kvsCount ? Number(kvsCount) : countSyllablesInWord(word);
-        return { word, syllables };
-    });
+const wrapWordsWithSyllableCount = (
+  kvs: KeyValueStore,
+  words: string[],
+): WordWithSyllables[] => {
+  return words.map((word) => {
+    const kvsCount = kvs.get(word);
+    const syllables = kvsCount ? Number(kvsCount) : countSyllablesInWord(word);
+    return { word, syllables };
+  });
 };
 
 export const parseHaiku = (kvs: KeyValueStore, text: string) => {
-    const wordsWithSyllables = cleanAndWrapWords(kvs, text)
-    const count = countWrappedWordsSyllables(wordsWithSyllables);
+  const wordsWithSyllables = cleanAndWrapWords(kvs, text);
+  const count = countWrappedWordsSyllables(wordsWithSyllables);
 
-    if ( count !== 17 ) {
+  if (count !== 17) {
+    return null;
+  }
+
+  type HaikuWithRunningCount = Readonly<{
+    haiku: Haiku;
+    count: number;
+  }>;
+
+  const result = wordsWithSyllables.reduce<HaikuWithRunningCount | null>(
+    (h, w) => {
+      if (h === null) {
         return null;
-    }
+      }
 
-    type HaikuWithRunningCount = Readonly<{
-        haiku: Haiku;
-        count: number;
-    }>;
+      const currentCount = h.count;
+      const currentHaiku = h.haiku;
 
-    const result = wordsWithSyllables.reduce<HaikuWithRunningCount | null>((h, w) => {
-        if ( h === null ) {
-            return null;
-        }
+      // If the syllable count for the word is unknown, just return null.
+      if (w.syllables === 0) {
+        return null;
+      }
 
-        const currentCount = h.count;
-        const currentHaiku = h.haiku;
+      const updatedCount = currentCount + w.syllables;
 
-        // If the syllable count for the word is unknown, just return null.
-        if ( w.syllables === 0 ) {
-            return null;
-        }
+      let key: keyof Haiku | null = null;
+      const validWordPredicate = (left: number, right: number) =>
+        left <= currentCount && updatedCount <= right;
 
-        const updatedCount = currentCount + w.syllables;
+      if (validWordPredicate(0, 5)) {
+        key = 'firstLine';
+      } else if (validWordPredicate(5, 12)) {
+        key = 'secondLine';
+      } else if (validWordPredicate(12, 17)) {
+        key = 'thirdLine';
+      }
 
-        let key: keyof Haiku | null = null;
-        const validWordPredicate = (left: number, right: number) => left <= currentCount && updatedCount <= right;
+      if (!key) {
+        return null;
+      }
 
-        if ( validWordPredicate(0, 5) ) {
-            key = "firstLine";
-        } else if ( validWordPredicate(5, 12) ) {
-            key = "secondLine";
-        } else if ( validWordPredicate(12, 17) ) {
-            key = "thirdLine";
-        }
+      const updatedHaiku = {
+        ...currentHaiku,
+        [key]: [...currentHaiku[key], w.word],
+      };
 
-        if ( !key ) {
-            return null;
-        }
+      return { haiku: updatedHaiku, count: updatedCount };
+    },
+    {
+      haiku: { firstLine: [], secondLine: [], thirdLine: [] },
+      count: 0,
+    } as HaikuWithRunningCount,
+  );
 
-        const updatedHaiku = { ...currentHaiku, [key]: [ ...currentHaiku[key], w.word] }
-
-        return  { haiku: updatedHaiku , count: updatedCount };
-    }, { haiku: { firstLine: [], secondLine: [], thirdLine: [] }, count: 0 } as HaikuWithRunningCount);
-
-    return result?.haiku ?? null;
+  return result?.haiku ?? null;
 };
 
 export const formatHaiku = (author: string, channel: string, haiku: Haiku) => {
-    return {
-        title : ":fish: Haiku Detected :fish:",
-        description : `${ haiku.firstLine.join(" ") }\n${ haiku.secondLine.join(" ") }\n${ haiku.thirdLine.join(" ") }`,
-        footer : { text : `by ${ author } in #${ channel }` }
-    };
+  return {
+    title: ':fish: Haiku Detected :fish:',
+    description: `${haiku.firstLine.join(' ')}\n${haiku.secondLine.join(' ')}\n${haiku.thirdLine.join(' ')}`,
+    footer: { text: `by ${author} in #${channel}` },
+  };
 };

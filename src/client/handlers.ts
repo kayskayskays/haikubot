@@ -1,60 +1,64 @@
-import { ChannelType, Events, Message } from "discord.js";
-import { formatHaiku, parseHaiku } from "../util/util.js";
-import { ClientWrapper } from "./ClientWrapper.js";
-import { CmdSetWriteableChannel } from "../commands/CmdSetWriteableChannel.js";
+import { ChannelType, Events, Message } from 'discord.js';
+import { formatHaiku, parseHaiku } from '../util/util.js';
+import { ClientWrapper } from './ClientWrapper.js';
+import { CmdSetWriteableChannel } from '../commands/CmdSetWriteableChannel.js';
 
 const onLogin = (cw: ClientWrapper) => {
-    const c = cw.client();
-    c.once(Events.ClientReady, c => console.log(`Logged in as ${c.user.displayName}.`));
+  const c = cw.client();
+  c.once(Events.ClientReady, (c) =>
+    console.log(`Logged in as ${c.user.displayName}.`),
+  );
 };
 
 const onMessage = (cw: ClientWrapper) => {
-    const c = cw.client();
+  const c = cw.client();
 
-    c.on(Events.MessageCreate, async (msg: Message) => {
-        if ( !msg.inGuild() ) {
-            return;
-        }
+  c.on(Events.MessageCreate, async (msg: Message) => {
+    if (!msg.inGuild()) {
+      return;
+    }
 
-        if ( msg.author.bot ) {
-            return;
-        }
+    if (msg.author.bot) {
+      return;
+    }
 
-        const guildId = msg.guildId;
-        const kvs = cw.kvStore(guildId);
+    const guildId = msg.guildId;
+    const kvs = cw.kvStore(guildId);
 
-        const channelId = kvs.get(CmdSetWriteableChannel.KEY);
-        if ( !channelId ) {
-            return;
-        }
+    const channelId = kvs.get(CmdSetWriteableChannel.KEY);
+    if (!channelId) {
+      return;
+    }
 
-        const haiku = parseHaiku(kvs, msg.content);
-        if ( !haiku ) {
-            return;
-        }
+    const haiku = parseHaiku(kvs, msg.content);
+    if (!haiku) {
+      return;
+    }
 
-        const channel = await c.channels.fetch(channelId).catch(e => console.error(e));
+    const channel = await c.channels
+      .fetch(channelId)
+      .catch((e) => console.error(e));
 
-        const msgChannelId = msg.channel.id;
-        if ( msgChannelId === channelId ) {
-            return;
-        }
+    const msgChannelId = msg.channel.id;
+    if (msgChannelId === channelId) {
+      return;
+    }
 
-        await msg.react("🇭");
-        await msg.react("🇦");
-        await msg.react("🇮");
-        await msg.react("🇰");
-        await msg.react("🇺");
+    await msg.react('🇭');
+    await msg.react('🇦');
+    await msg.react('🇮');
+    await msg.react('🇰');
+    await msg.react('🇺');
 
-        const embedding = formatHaiku(msg.author.tag, msg.channel.name, haiku);
+    const embedding = formatHaiku(msg.author.tag, msg.channel.name, haiku);
 
-        if ( channel?.type === ChannelType.GuildText ) {
-            channel.send({ embeds: [ embedding ] });
-        }
-    });
-}
+    if (channel?.type === ChannelType.GuildText) {
+      channel.send({ embeds: [embedding] });
+    }
+  });
+};
 
 export const registerHandlers = (cw: ClientWrapper) => {
-    onLogin(cw);
-    onMessage(cw);
-}
+  onLogin(cw);
+  onMessage(cw);
+};
