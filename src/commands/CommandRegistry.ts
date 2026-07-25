@@ -28,14 +28,7 @@ export class CommandRegistry {
     guildId: string,
   ): Promise<void> {
     const rest = new REST({ version: '10' }).setToken(token);
-
-    let cmds = [];
-    for (const cmd of this._registry.values()) {
-      cmds.push(cmd);
-    }
-
-    await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
-      body: cmds.map((cmd) => cmd.data()),
-    });
+    const body =  [...this._registry.values()].map((cmd) => cmd.data());
+    await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body });
   }
 }
