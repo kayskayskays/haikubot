@@ -8,6 +8,10 @@ import {
 import { countSyllables } from '../util/util.js';
 
 export class CmdCountSyllables extends Command<MessageContextMenuCommandInteraction> {
+  name(): string {
+    return 'Count Syllables';
+  }
+
   data() {
     return new ContextMenuCommandBuilder()
       .setName(this.name())
@@ -20,19 +24,14 @@ export class CmdCountSyllables extends Command<MessageContextMenuCommandInteract
     const msg = interaction.targetMessage;
     const content = msg.content;
 
-    const guildId = interaction.guildId;
-    if (!guildId) {
-      console.error('No guild ID found.');
+    const kvs = this.keyValueStore(interaction);
+    if (!kvs) {
       return;
     }
 
     await interaction.reply({
-      content: `${countSyllables(this.clientWrapper()!.kvStore(guildId), content)} syllables.`,
+      content: `${countSyllables(kvs, content)} syllables.`,
       flags: MessageFlags.Ephemeral,
     });
-  }
-
-  name(): string {
-    return 'Count Syllables';
   }
 }

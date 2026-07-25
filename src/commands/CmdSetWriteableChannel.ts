@@ -4,13 +4,8 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 export class CmdSetWriteableChannel extends Command<ChatInputCommandInteraction> {
   static readonly KEY: string = 'writeable-channel';
 
-  async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const channelId = interaction.channelId;
-
-    const kvs = this.keyValueStore(interaction);
-    kvs?.set(CmdSetWriteableChannel.KEY, channelId);
-
-    await interaction.reply('Success!');
+  name(): string {
+    return 'set-channel';
   }
 
   data() {
@@ -19,7 +14,16 @@ export class CmdSetWriteableChannel extends Command<ChatInputCommandInteraction>
       .setDescription('Sets the current channel for the bot to write to.');
   }
 
-  name(): string {
-    return 'set-channel';
+  async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    const channelId = interaction.channelId;
+
+    const kvs = this.keyValueStore(interaction);
+    if (!kvs) {
+      return;
+    }
+
+    kvs.set(CmdSetWriteableChannel.KEY, channelId);
+
+    await interaction.reply('Success!');
   }
 }

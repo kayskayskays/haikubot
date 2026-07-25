@@ -24,12 +24,16 @@ export abstract class Command<T extends CommandInteraction> {
       return undefined;
     }
 
-    return this.clientWrapper()?.kvStore(guildId);
+    const kvs = this.clientWrapper()?.kvStore(guildId);
+    if (!kvs) {
+      console.error('No key value store found.');
+      return undefined;
+    }
   }
 
-  abstract execute(interaction: T): Promise<void>;
+  abstract name(): string;
 
   abstract data(): ApplicationCommandDataResolvable;
 
-  abstract name(): string;
+  abstract execute(interaction: T): Promise<void>;
 }

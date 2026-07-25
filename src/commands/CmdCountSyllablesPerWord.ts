@@ -26,7 +26,6 @@ export class CmdCountSyllablesPerWord extends Command<MessageContextMenuCommandI
 
     const kvs = this.keyValueStore(interaction);
     if (!kvs) {
-      console.error('No kvs found.');
       return;
     }
 

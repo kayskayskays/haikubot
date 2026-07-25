@@ -4,6 +4,8 @@ export interface KeyValueStore {
   set(key: string, value: string): void;
 
   unset(key: string): void;
+
+  entries(): { key: string; value: string }[];
 }
 
 export namespace KeyValueStore {

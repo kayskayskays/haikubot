@@ -7,6 +7,10 @@ import {
 } from 'discord.js';
 
 export class CmdUpdateSyllableCount extends Command<ChatInputCommandInteraction> {
+  name(): string {
+    return 'update-syllable-count';
+  }
+
   data(): ApplicationCommandDataResolvable {
     return new SlashCommandBuilder()
       .setName(this.name())
@@ -24,28 +28,22 @@ export class CmdUpdateSyllableCount extends Command<ChatInputCommandInteraction>
           .setRequired(true)
           .setMinValue(0),
       )
-      .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers);
+      .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild);
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     const word = interaction.options.getString('word', true);
     const count = interaction.options.getInteger('count', true);
 
-    const guildId = interaction.guildId;
-    if (!guildId) {
-      console.error('No guild ID found.');
-      return undefined;
+    const kvs = this.keyValueStore(interaction);
+    if (!kvs) {
+      return;
     }
 
-    const kvs = this.clientWrapper()!.kvStore(guildId);
     kvs.set(word, String(count));
 
     await interaction.reply({
       content: `Updated **${word}** → ${count} syllable(s).`,
     });
-  }
-
-  name(): string {
-    return 'update-syllable-count';
   }
 }

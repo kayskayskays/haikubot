@@ -25,13 +25,18 @@ export class SqlLiteClient implements KeyValueStore {
       .run();
   }
 
-  get(key: string): string | null {
-    if (this._cache.size === 0) {
-      this.initializeCache();
-    }
+  entries(): { key: string; value: string }[] {
+    this.populateCacheIfEmpty();
+    return [...this._cache.entries()].map(([key, value]) => {
+      return { key, value };
+    });
+  }
 
+  get(key: string): string | null {
+    this.populateCacheIfEmpty();
     return this._cache.get(key) ?? null;
   }
+
   set(key: string, value: string): void {
     this._db
       .prepare(
@@ -60,7 +65,11 @@ export class SqlLiteClient implements KeyValueStore {
     this._cache.delete(key);
   }
 
-  private initializeCache(): void {
+  private populateCacheIfEmpty(): void {
+    if (this._cache.size !== 0) {
+      return;
+    }
+
     const rows = this._db
       .prepare(
         `
