@@ -9,7 +9,16 @@ if (guildId == undefined || extraArgs.length > 0) {
 }
 
 const token = process.env.DISCORD_TOKEN!;
+if (!token) {
+  console.error('DISCORD_TOKEN is not set.');
+  process.exit(1);
+}
+
 const clientId = process.env.CLIENT_ID!;
+if (!clientId) {
+  console.error('CLIENT_ID is not set.');
+  process.exit(1);
+}
 
 const registry = new CommandRegistry(COMMANDS);
 await registry.deployAll(token, clientId, guildId).catch((err) => {
