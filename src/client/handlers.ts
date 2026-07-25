@@ -23,7 +23,7 @@ const onMessage = (cw: ClientWrapper) => {
     }
 
     const guildId = msg.guildId;
-    const kvs = cw.kvStore(guildId);
+    const kvs = cw.keyValueStore(guildId);
 
     const channelId = kvs.get(CmdSetWriteableChannel.KEY);
     if (!channelId) {

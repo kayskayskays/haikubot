@@ -24,7 +24,7 @@ export abstract class Command<T extends CommandInteraction> {
       return undefined;
     }
 
-    const kvs = this.clientWrapper()?.kvStore(guildId);
+    const kvs = this.clientWrapper()?.keyValueStore(guildId);
     if (!kvs) {
       console.error('No key value store found.');
       return undefined;

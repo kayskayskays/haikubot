@@ -19,7 +19,7 @@ export class ClientWrapper {
     return this._client;
   }
 
-  public kvStore(guildId: string): KeyValueStore {
+  public keyValueStore(guildId: string): KeyValueStore {
     if (!this._idToKvs.has(guildId)) {
       this._idToKvs.set(guildId, this._kvStoreFactory(guildId));
     }
