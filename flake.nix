@@ -27,7 +27,7 @@
 
               pnpm = pkgs.pnpm_10;
               fetcherVersion = 3;
-              hash = "sha256-iUZMoi0z5AQjq6WGEEADQakHXD2KW3CUArgO1jtJftA=";
+              hash = "sha256-7NXn0zykBcImbRc7SmbxVr9cW7i7jogLD+X512C4NU4=";
             };
           in
           pkgs.stdenv.mkDerivation {
