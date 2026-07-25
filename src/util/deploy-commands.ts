@@ -12,6 +12,7 @@ const token = process.env.DISCORD_TOKEN!;
 const clientId = process.env.CLIENT_ID!;
 
 const registry = new CommandRegistry(COMMANDS);
-await registry
-  .deployAll(token, clientId, guildId)
-  .catch((_) => process.exit(1));
+await registry.deployAll(token, clientId, guildId).catch((err) => {
+  console.error('Failed to deploy commands:', err);
+  process.exit(1);
+});
