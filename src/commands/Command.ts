@@ -29,6 +29,7 @@ export abstract class Command<T extends CommandInteraction> {
       console.error('No key value store found.');
       return undefined;
     }
+    return kvs;
   }
 
   abstract name(): string;
